@@ -1,0 +1,164 @@
+/* CSS Reset & Variables */
+:root {
+  --primary-color: #4f46e5; /* Indigo */
+  --primary-hover: #4338ca;
+  --bg-gradient-start: #f3f4f6;
+  --bg-gradient-end: #e5e7eb;
+  --surface-color: rgba(255, 255, 255, 0.85);
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --urgent-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  --success-color: #10b981;
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  background-attachment: fixed;
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism Utilities */
+.glass-card {
+  background: var(--surface-color);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+}
+
+/* Form Styles */
+.form-control {
+  border-radius: 10px !important;
+  border: 1px solid #d1d5db !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1) !important;
+}
+
+.form-select {
+  border-radius: 10px !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Button Customization */
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 0.6rem 1.5rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Typography Enhancements */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-muted {
+  color: var(--text-light) !important;
+}
+
+/* Circular Items */
+.circular-item {
+  border: none;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.circular-item:last-child {
+  border-bottom: none;
+}
+
+.circular-item:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.circular-urgent {
+  position: relative;
+  overflow: hidden;
+}
+
+.circular-urgent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--urgent-gradient);
+}
+
+.circular-read {
+  opacity: 0.6;
+  filter: grayscale(0.2);
+}
+
+/* Stat Cards */
+.stat-card {
+  border: none;
+  border-radius: 16px;
+  color: white;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+.stat-primary { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); }
+.stat-success { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
+.stat-info    { background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); }
+.stat-danger  { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
+
+/* Navbar Overrides */
+.navbar {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(31, 41, 55, 0.95) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.toast-container {
+  animation: slideInRight 0.3s ease-out forwards;
+}
