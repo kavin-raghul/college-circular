@@ -3,6 +3,7 @@ import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import API_BASE_URL from '../config';
 
 function CreateCircular() {
   const { token, user } = useContext(AuthContext);
@@ -59,7 +60,7 @@ function CreateCircular() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/circulars', data, {
+      await axios.post(`${API_BASE_URL}/api/circulars`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`

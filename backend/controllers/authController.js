@@ -2,6 +2,14 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? 'None' : 'Lax'
+};
+
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'secret', {
     expiresIn: '15m',
@@ -68,9 +76,7 @@ const loginUser = async (req, res) => {
       await user.save();
 
       res.cookie('jwt', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict',
+        ...cookieOptions,
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       });
 
@@ -101,7 +107,7 @@ const logoutUser = async (req, res) => {
       await User.updateOne({ _id: user._id }, { $set: { refreshToken: '' } });
     }
 
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'Strict', secure: process.env.NODE_ENV === 'production' });
+    res.clearCookie('jwt', cookieOptions);
     res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ message: error.message });

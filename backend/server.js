@@ -18,8 +18,27 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
+// Trust proxy (required on Render for secure cookies)
+app.set('trust proxy', 1);
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://college-circular-z26j.vercel.app',
+  ...(process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',').map((origin) => origin.trim().replace(/\/$/, ''))
+    : [])
+];
+
 // Middleware
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -30,9 +49,15 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Socket.io initialization
 const io = new Server(server, {
   cors: {
-    origin: '*', // To be restricted in production
-    methods: ['GET', 'POST']
+    origin: allowedOrigins,
+    methods: ['GET', 'POST'],
+    credentials: true
   }
+});
+
+// Health check
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'College Circular API is running' });
 });
 
 // API Routes

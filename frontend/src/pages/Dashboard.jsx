@@ -3,6 +3,7 @@ import { Row, Col, Card, Badge, Button, Toast, ToastContainer } from 'react-boot
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { io } from 'socket.io-client';
+import API_BASE_URL from '../config';
 
 function Dashboard() {
   const { user, token } = useContext(AuthContext);
@@ -13,7 +14,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/dashboard/stats', {
+        const res = await axios.get(`${API_BASE_URL}/api/dashboard/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setStats(res.data);
@@ -24,7 +25,7 @@ function Dashboard() {
 
     const fetchCirculars = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/circulars', {
+        const res = await axios.get(`${API_BASE_URL}/api/circulars`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setCirculars(res.data);
@@ -40,7 +41,7 @@ function Dashboard() {
   }, [token]);
 
   useEffect(() => {
-    const socket = io('http://localhost:5000');
+    const socket = io(API_BASE_URL);
     
     socket.on('new_circular', (circular) => {
       setToastMessage(`New Circular: ${circular.title}`);
@@ -52,7 +53,7 @@ function Dashboard() {
 
   const markAsRead = async (id) => {
     try {
-      await axios.post(`http://localhost:5000/api/circulars/${id}/read`, {}, {
+      await axios.post(`${API_BASE_URL}/api/circulars/${id}/read`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -162,7 +163,7 @@ function Dashboard() {
                      <Button 
                        variant="outline-secondary" 
                        size="sm" 
-                       href={`http://localhost:5000${circular.attachments[0]}`}
+                       href={circular.attachments[0].startsWith('http') ? circular.attachments[0] : `${API_BASE_URL}${circular.attachments[0]}`}
                        target="_blank"
                      >
                        View File

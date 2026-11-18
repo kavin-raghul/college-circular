@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 
 export const AuthContext = createContext();
 
@@ -11,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   // Setup Axios interceptor for refresh token
   useEffect(() => {
     const api = axios.create({
-      baseURL: 'http://localhost:5000/api',
+      baseURL: `${API_BASE_URL}/api`,
       withCredentials: true
     });
 
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
           try {
-            const res = await axios.post('http://localhost:5000/api/auth/refresh-token', {}, { withCredentials: true });
+            const res = await axios.post(`${API_BASE_URL}/api/auth/refresh-token`, {}, { withCredentials: true });
             if (res.data.accessToken) {
               setToken(res.data.accessToken);
               originalRequest.headers['Authorization'] = `Bearer ${res.data.accessToken}`;
@@ -49,7 +50,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password }, { withCredentials: true });
+    const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password }, { withCredentials: true });
     setUser(res.data);
     setToken(res.data.accessToken);
     localStorage.setItem('user', JSON.stringify(res.data));
@@ -58,7 +59,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-       await axios.post('http://localhost:5000/api/auth/logout', {}, { withCredentials: true });
+       await axios.post(`${API_BASE_URL}/api/auth/logout`, {}, { withCredentials: true });
     } catch (err) {
        console.error("Logout API failed, continuing local logout", err);
     } finally {
@@ -71,7 +72,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     // Hit register endpoint
-    await axios.post('http://localhost:5000/api/auth/register', userData);
+    await axios.post(`${API_BASE_URL}/api/auth/register`, userData);
     // Auto-login immediately after successful registration
     await login(userData.email, userData.password);
   };
